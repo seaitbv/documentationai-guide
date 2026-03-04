@@ -1,0 +1,151 @@
+---
+title: "Particle system"
+description: "ParticleLibrary centralized catalog of all particle effects, color palette, texture generation, and usage across game systems."
+---
+
+## Overview
+
+`ParticleLibrary` is a centralized library for creating and configuring all particle effects in SpaceFlapper. It provides factory methods for consistent styling, performance optimization through shared textures, and a unified color palette. All particle effects in the game are created through this library.
+
+## Color palette
+
+The `ParticleColors` enum defines the consistent color palette used across all particle effects:
+
+### Primary colors
+
+| Name | Color | RGB | Usage |
+|------|-------|-----|-------|
+| `cyan` | Cyan | (0.0, 0.9, 1.0) | Shield, streak level 1 |
+| `orange` | Orange | (1.0, 0.5, 0.0) | Rocket boost, streak level 3 |
+| `purple` | Purple | (0.6, 0.2, 0.9) | Time warp, gravity flip |
+| `gold` | Gold | (1.0, 0.85, 0.2) | Stardust fever, milestones |
+| `white` | White | (1.0, 1.0, 1.0) | Generic effects |
+
+### Secondary/accent colors
+
+| Name | Color | RGB | Usage |
+|------|-------|-----|-------|
+| `lightCyan` | Light cyan | (0.3, 0.85, 0.9) | Streak level 2 |
+| `lightOrange` | Light orange | (1.0, 0.6, 0.2) | Streak level 3 accents |
+| `lightPurple` | Light purple | (0.7, 0.4, 1.0) | Time warp accents |
+| `lightGold` | Light gold | (1.0, 0.9, 0.4) | Milestone accents |
+| `brightYellow` | Bright yellow | (1.0, 0.9, 0.3) | High-tier celebrations |
+
+### Rainbow colors (legendary milestone)
+
+| Name | RGB |
+|------|-----|
+| `rainbowRed` | (1.0, 0.2, 0.2) |
+| `rainbowOrange` | (1.0, 0.6, 0.0) |
+| `rainbowYellow` | (1.0, 1.0, 0.2) |
+| `rainbowGreen` | (0.2, 1.0, 0.2) |
+| `rainbowCyan` | (0.2, 0.8, 1.0) |
+
+## Shared textures
+
+`ParticleLibrary` provides cached texture generation methods to avoid redundant rendering:
+
+### Soft particle texture
+
+```swift ParticleLibrary.swift
+static func softParticleTexture() -> SKTexture {
+    // Generates a 24x24 circle with radial gradient
+    // White center fading to transparent edges
+    // Used by: rocket boost flames, time warp swirl, trail effects
+}
+```
+
+The soft particle uses a radial gradient from white (center) to transparent (edges), creating a smooth glow effect when combined with `.add` blend mode.
+
+## Particle effect catalog
+
+### Score and milestone effects
+
+| Effect | Particle Count | Lifetime | Speed | Color | Trigger |
+|--------|---------------|----------|-------|-------|---------|
+| Score pop | 6-8 | 0.3s | 40pt/s | Gold | Obstacle passed |
+| Milestone 10 | 15 | 0.5s | 80pt/s | Cyan | Score 10 |
+| Milestone 25 | 25 | 0.6s | 100pt/s | Gold | Score 25 |
+| Milestone 50 | 40 | 0.7s | 120pt/s | Orange | Score 50 |
+| Milestone 100 | 60 | 0.8s | 150pt/s | Rainbow sequence | Score 100 |
+| New record | 30 | 0.6s | 120pt/s | Gold + white | High score beaten |
+
+### Power-up effects
+
+| Effect | Particle Count | Lifetime | Color | Trigger |
+|--------|---------------|----------|-------|---------|
+| Shield collection | 20 | 0.5s | Cyan | Shield picked up |
+| Shield break | 15 | 0.4s | Cyan fragments | Shield absorbs hit |
+| Rocket collection | 30 | 0.6s | Orange | Rocket boost picked up |
+| Time warp collection | 35 + 3 rings | 0.65s | Purple | Time warp picked up |
+
+### Event effects
+
+| Effect | Description | Color |
+|--------|-------------|-------|
+| Meteor trail | Continuous trail behind each meteor | Orange-red |
+| Storm survival | Burst on successful storm survival | Orange-gold |
+| Gravity master | 10-particle circular burst | Purple |
+| Comet ride shatter | 6-particle burst per shattered obstacle | Light cyan |
+| Stardust rain | Continuous gold particles from top of screen | Gold |
+| Warp zone | Rainbow color-cycling overlay | Rainbow |
+
+### Streak effects
+
+| Effect | Birth Rate | Color | Trigger |
+|--------|-----------|-------|---------|
+| Level-up burst | 200/s (25 total) | Level-specific | Streak level increased |
+| Trail particles | 40-130/s (continuous) | Level-specific | Active streak |
+
+## Blend modes
+
+All particle effects use `.add` (additive) blend mode for glowing visuals against the dark space background. This creates bright, luminous effects without obscuring the game elements behind them.
+
+<Callout kind="info">
+  Additive blending means particle colors add to the background rather than replacing it. Overlapping particles become brighter, creating natural light accumulation. This works particularly well against SpaceFlapper's near-black background.
+</Callout>
+
+## Performance considerations
+
+- **Texture caching**: `softParticleTexture()` generates the texture once and reuses it across all emitters
+- **Particle limits**: `numParticlesToEmit` caps burst effects to prevent runaway particle counts
+- **Auto-removal**: All burst emitters include a timed `SKAction.removeFromParent()` sequence
+- **Target nodes**: Trail emitters use `targetNode = scene` so particles stay in world space when the player moves
+- **Lifecycle management**: Continuous emitters (trails, flames) set `particleBirthRate = 0` before removal to allow existing particles to fade naturally
+
+## Creating custom effects
+
+All particle effects follow a consistent pattern:
+
+```swift
+// 1. Create emitter
+let emitter = SKEmitterNode()
+
+// 2. Set texture (use shared when possible)
+emitter.particleTexture = ParticleLibrary.softParticleTexture()
+
+// 3. Configure lifecycle
+emitter.particleBirthRate = 100
+emitter.numParticlesToEmit = 20   // 0 = continuous
+emitter.particleLifetime = 0.5
+emitter.particleLifetimeRange = 0.2
+
+// 4. Configure movement
+emitter.particleSpeed = 80
+emitter.emissionAngleRange = .pi * 2  // Full circle
+
+// 5. Configure appearance
+emitter.particleColor = ParticleColors.cyan
+emitter.particleColorBlendFactor = 1.0
+emitter.particleBlendMode = .add
+
+// 6. Configure fade
+emitter.particleAlpha = 1.0
+emitter.particleAlphaSpeed = -2.0
+
+// 7. Auto-remove for bursts
+emitter.run(SKAction.sequence([
+    SKAction.wait(forDuration: 1.0),
+    SKAction.removeFromParent()
+]))
+```
