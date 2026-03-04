@@ -1,0 +1,137 @@
+---
+title: "Milestones and Micro-Goals"
+description: "In-game milestone celebrations at score thresholds and micro-goal suggestions on the game over screen in SpaceFlapper"
+---
+
+## Milestone celebrations
+
+Milestones are visual celebrations that trigger when you reach specific score thresholds during gameplay. They provide satisfying feedback moments that mark your progress through a run.
+
+### All milestones
+
+| Score | Milestone | Visual Effect | Sound |
+|-------|-----------|---------------|-------|
+| 10 | First Milestone | Screen flash (white) + star burst particles | Milestone 10 sound |
+| 25 | Second Milestone | Expanding ring wave (cyan) | Milestone 25 sound |
+| 50 | Third Milestone | Falling star shower from top of screen | Milestone 50 sound |
+| 100 | Legendary | Screen shake + rainbow wave + firework burst + "LEGENDARY!" banner | Milestone 100 sound |
+
+<Callout kind="info">
+  Each milestone triggers only once per run. If you pass score 50, you see all three milestones (10, 25, and 50) in sequence during that run, but each only fires the first time you cross its threshold.
+</Callout>
+
+### Score 10 -- Screen flash and star burst
+
+The first milestone provides a quick acknowledgment:
+
+- **White screen flash**: 0.1 second duration, peaks at 60% opacity with additive blending
+- **Star burst**: 20 golden star particles burst radially from the center of the screen, fading over 0.6 seconds
+
+### Score 25 -- Expanding ring wave
+
+A cyan ring wave expands from the center:
+
+- **Ring**: Starts at 10px radius and expands to 80% of the screen size
+- **Duration**: 0.5 seconds with ease-out timing
+- **Visual**: Cyan stroke with 3px glow, fading as it expands
+
+### Score 50 -- Falling star shower
+
+A dramatic shower of stars falls from the top of the screen:
+
+- **Particles**: 60 multi-colored stars (gold, cyan, white variations)
+- **Direction**: Falling downward with slight horizontal drift
+- **Duration**: Stars spawn over 2 seconds and persist for 3.5 seconds total
+- **Effect**: Rotation and sparkle on each particle
+
+### Score 100 -- Legendary celebration
+
+The ultimate milestone triggers a full multi-part celebration sequence:
+
+<Steps>
+  <Step title="Screen shake" icon="move" titleType="p">
+    The camera shakes with 3.5px amplitude for 0.3 seconds, with decreasing intensity over 8 iterations for a natural feel.
+  </Step>
+
+  <Step title="Rainbow wave" icon="palette" titleType="p">
+    Seven colored rings (red, orange, yellow, green, cyan, blue, purple) expand from the player position with 0.05 second stagger between each ring.
+  </Step>
+
+  <Step title="Firework burst" icon="sparkles" titleType="p">
+    A central burst of 35 gold particles plus four secondary bursts of 20 particles in red, green, cyan, and pink. Particles arc downward with gravity (-120 acceleration).
+  </Step>
+
+  <Step title="LEGENDARY! banner" icon="crown" titleType="p">
+    A gold "LEGENDARY!" text banner appears at screen center with:
+    - Spring scale entrance (0.3x to 1.3x to 1.0x)
+    - Shimmer pulse animation (3 cycles)
+    - Rainbow color cycling on the glow layer
+    - Float upward 20px then fade out
+  </Step>
+</Steps>
+
+<Callout kind="tip">
+  Reaching score 100 is a significant accomplishment. The game enters Legendary difficulty territory at this point, and the celebration marks you as an elite player.
+</Callout>
+
+## Micro-goal suggestions
+
+Micro-goals are motivational text suggestions displayed on the game over screen. They appear as italic text at the bottom of the results panel and give you a specific objective for your next run.
+
+### When micro-goals appear
+
+Micro-goals only display when **no special condition** is active on the game over screen. They are hidden if:
+
+- You set a new high score record
+- Your score was "so close" to your record
+- Your streak was "so close" to your best streak
+
+### Goal selection priority
+
+The game picks one micro-goal based on this priority order:
+
+| Priority | Condition | Suggested Goal |
+|----------|-----------|---------------|
+| 1 | Near-misses < 3 | "Try to get 3 near-misses!" |
+| 2 | Best streak < 3 | "Try to build a 3-obstacle streak!" |
+| 3 | Score below high score | "Beat your best of X!" |
+| 4 | Default (fallback) | "Keep going, you're improving!" |
+
+<Callout kind="info">
+  Micro-goals adapt to your weakest area. If you're not getting near-misses, that's the first suggestion. Once you consistently hit near-misses, the game moves on to suggesting streaks or beating your high score.
+</Callout>
+
+## Streak system context
+
+The streak system feeds into both milestones and micro-goals. Consecutive obstacle passes build your streak level:
+
+| Streak Level | Required Consecutive Passes |
+|-------------|---------------------------|
+| Level 1 | 3 passes |
+| Level 2 | 5 passes |
+| Level 3 | 8 passes |
+| Level 4 (Max) | 12 passes |
+
+The streak resets when you collide with an obstacle. Your best streak per session is tracked for badges and statistics.
+
+## Related pages
+
+<Columns cols="2">
+  <Card title="Game Over Screen" href="/progression/game-over" icon="square" horizontal={false}>
+    See where micro-goals and milestone effects fit into the game over flow.
+  </Card>
+
+  <Card title="Run Recap Badges" href="/progression/run-recap" icon="award" horizontal={false}>
+    Streaks and near-misses also trigger run recap badges.
+  </Card>
+</Columns>
+
+<Columns cols="2">
+  <Card title="Stardust Currency" href="/progression/stardust" icon="sparkles" horizontal={false}>
+    Difficulty tiers that drive milestones also affect stardust multipliers.
+  </Card>
+
+  <Card title="Achievements" href="/progression/achievements" icon="trophy" horizontal={false}>
+    Score milestones overlap with achievement thresholds for bonus rewards.
+  </Card>
+</Columns>

@@ -1,78 +1,83 @@
 ---
-title: Set Up Your Documentation
-description: 'A minimal, editable starting point for your own documentation site.'
+title: "SpaceFlapper Documentation"
+description: "Complete guide to SpaceFlapper, a space-themed arcade game built with SpriteKit and SwiftUI featuring dynamic obstacles, power-ups, and a deep progression system."
 ---
-## Start here (5–10 minutes)
 
-1. Edit this page so it describes your product and audience.
+## Welcome to SpaceFlapper
 
-2. Customize your onboarding flow in the [Quickstart](/quickstart) page.
+SpaceFlapper is a space-themed arcade game where you pilot a jetpack-equipped astronaut through an ever-changing gauntlet of cosmic obstacles. Tap to flap, dodge hazards, collect stardust, and chase your high score across three distinct themed scenes.
 
-3. Delete or rewrite any sections and pages you do not plan to use.
+Built with SpriteKit and SwiftUI for iOS, SpaceFlapper combines accessible tap-to-flap controls with layered mechanics that reward precision, streaks, and risk-taking.
 
-4. Invite a teammate to review the structure and concepts starting from [Core Concepts](/concepts).
+## What makes SpaceFlapper unique
 
-<Callout kind="alert" collapsed="false">
-  This site ships with placeholder content. Edit the text, links, and examples so they match your product before sharing it with others.
-</Callout>
+SpaceFlapper goes beyond the classic flappy formula with systems designed to keep every run feeling fresh:
 
-## What you get
+- **Dynamic difficulty** that scales with your score and survival time
+- **Near-miss rewards** that give bonus points for threading the needle, with escalating chain bonuses
+- **Streak system** that tracks consecutive obstacle passes and triggers visual effects at higher levels
+- **Six dynamic events** that transform gameplay mid-run, from meteor storms to gravity flips
+- **Three power-ups** including shields, rocket boosts, and time warp
+- **Stardust economy** for unlocking suits and tracking long-term progress
+- **Ghost rival system** that races a replay of your previous best run
+
+## Explore the documentation
 
 <Columns cols="3">
-  <Card title="Docs structure" href="/quickstart" icon="book-open" horizontal="false">
-    A clear navigation layout with starter pages you can rename or replace.
+  <Card title="How to Play" href="/getting-started/how-to-play" icon="gamepad-2" horizontal="false">
+    Learn the controls, scoring basics, and what to collect or avoid.
   </Card>
 
-  <Card title="Components" href="#try-a-few-components" icon="layout-grid" horizontal="false" target="_self">
-    Prebuilt blocks like Callouts, Steps, Tabs, and Cards to keep pages clean.
+  <Card title="First Flight" href="/getting-started/first-flight" icon="rocket" horizontal="false">
+    A guided walkthrough of your first run with survival tips for each scene.
   </Card>
 
-  <Card title="API reference hook" href="/authentication" icon="code" horizontal="false">
-    A placeholder `openapi.yaml` you can swap with your real API spec.
-  </Card>
-</Columns>
-
-## Make your first edit
-
-<Steps>
-  <Step title="Rewrite this page" icon="edit" title-type="p">
-    Update the title, description, and sections in `introduction` so they reflect your product and documentation goals.
-  </Step>
-
-  <Step title="Customize Quickstart" icon="zap" title-type="p">
-    Replace the steps in `quickstart` with your real onboarding flow so new readers know exactly how to get started.
-  </Step>
-
-  <Step title="Remove or repurpose samples" icon="trash" title-type="p">
-    Delete unused sample sections and pages, or rewrite them with your own content to keep navigation focused.
-  </Step>
-</Steps>
-
-## Try a few components
-
-You can browse the component gallery in the [Components](/components) page for ready-to-use examples of Cards, Callouts, Steps, Tabs, and more.
-
-## Continue to the rest of the sample
-
-<Columns cols="2">
-  <Card title="Quickstart" href="/quickstart" icon="zap" horizontal="false">
-    See the minimal setup flow.
-  </Card>
-
-  <Card title="Core Concepts" href="/concepts" icon="layers" horizontal="false">
-    Learn how pages, navigation, and components fit together.
-  </Card>
-
-  <Card title="Components" href="/components" icon="code" horizontal="false">
-    A small gallery of built-in components.
-  </Card>
-
-  <Card title="Authentication" href="/authentication" icon="lock" horizontal="false">
-    Example layout for an auth guide.
-  </Card>
-
-  <Card title="Help Center" href="/help-center" icon="help-circle" horizontal="false">
-    Starter FAQ, guides, and troubleshooting templates.
+  <Card title="Game Mechanics" href="/mechanics/scoring" icon="target" horizontal="false">
+    Scoring formulas, near-miss bonuses, streaks, and difficulty scaling.
   </Card>
 </Columns>
 
+<Columns cols="3">
+  <Card title="Obstacles" href="/obstacles/overview" icon="shield-alert" horizontal="false">
+    All obstacle types from static pipes to gravity wells and moving barriers.
+  </Card>
+
+  <Card title="Power-Ups" href="/power-ups/overview" icon="zap" horizontal="false">
+    Shields, rocket boosts, and time warp abilities explained.
+  </Card>
+
+  <Card title="Dynamic Events" href="/events/overview" icon="sparkles" horizontal="false">
+    Speed surges, warp zones, meteor storms, gravity flips, comet rides, and more.
+  </Card>
+</Columns>
+
+<Columns cols="3">
+  <Card title="Progression" href="/progression/stardust" icon="star" horizontal="false">
+    Stardust economy, suit shop, and achievement system.
+  </Card>
+
+  <Card title="Architecture" href="/technical/architecture" icon="cpu" horizontal="false">
+    Technical reference for the SpriteKit and SwiftUI architecture.
+  </Card>
+
+  <Card title="Changelog" href="/changelog" icon="file-text" horizontal="false">
+    Version history and release notes.
+  </Card>
+</Columns>
+
+## Game at a glance
+
+| Feature | Details |
+|---------|---------|
+| Platform | iOS (SpriteKit + SwiftUI) |
+| Controls | Tap anywhere to flap |
+| Obstacle types | 12+ including static, moving, rotating, and gravity wells |
+| Power-ups | Shield (15s), Rocket Boost (3s), Time Warp (4s) |
+| Dynamic events | 6 types: Speed Surge, Warp Zone, Meteor Storm, Gravity Flip, Comet Ride, Stardust Fever |
+| Scoring | 1 point per obstacle + near-miss bonuses + streak multipliers |
+| Collectibles | Stardust (star bits) for the in-game shop |
+| Progression | Achievements, suit unlocks, and persistent statistics |
+
+<Callout kind="tip">
+  New to SpaceFlapper? Start with the [How to Play](/getting-started/how-to-play) guide to learn the basics, then follow the [First Flight](/getting-started/first-flight) walkthrough for a guided first run.
+</Callout>

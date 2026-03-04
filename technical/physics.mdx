@@ -1,0 +1,217 @@
+---
+title: "Physics System"
+description: "Physics categories, collision matrix, contact detection, gravity, and player physics parameters in SpaceFlapper"
+---
+
+## Physics overview
+
+SpaceFlapper uses SpriteKit's built-in physics engine for gravity, collision detection, and contact notifications. The physics world runs at the scene level with customized gravity, and each node type is assigned a bitmask category that controls what it collides and interacts with.
+
+## Physics categories
+
+All physics categories are defined as a bitmask struct inside `GameScene`:
+
+```swift GameScene.swift
+struct PhysicsCategory {
+    static let none: UInt32       = 0         // 0b000000
+    static let player: UInt32     = 0b1       // 0b000001
+    static let obstacle: UInt32   = 0b10      // 0b000010
+    static let score: UInt32      = 0b100     // 0b000100
+    static let boundary: UInt32   = 0b1000    // 0b001000
+    static let powerUp: UInt32    = 0b10000   // 0b010000
+    static let collectible: UInt32 = 0b100000 // 0b100000
+}
+```
+
+| Category | Bit value | Assigned to |
+|----------|-----------|-------------|
+| `none` | `0` | No physics interactions |
+| `player` | `1` | `PlayerNode` astronaut |
+| `obstacle` | `2` | All obstacle types (static, moving, solar, belt, Europa, meteors) |
+| `score` | `4` | Invisible score zone triggers between obstacle pairs |
+| `boundary` | `8` | Top and bottom screen boundaries |
+| `powerUp` | `16` | Shield, rocket boost, and time warp power-ups |
+| `collectible` | `32` | Star bit collectibles and cosmic magnets |
+
+## Collision matrix
+
+The collision matrix defines two distinct behaviors: **contact detection** (triggers a callback but does not cause physical deflection) and **collision response** (causes physical deflection between bodies).
+
+| Body A | Body B | Contact? | Collision? | Result |
+|--------|--------|----------|------------|--------|
+| Player | Obstacle | Yes | No | Death -- triggers death animation and game over |
+| Player | Boundary | Yes | Yes | Death + physical deflection prevents leaving screen |
+| Player | Score | Yes | No | Score increment -- score zone is removed after contact |
+| Player | PowerUp | Yes | No | Power-up collection -- applies effect and removes node |
+| Player | Collectible | Yes | No | Stardust collection -- awards stardust and removes node |
+| Obstacle | Obstacle | No | No | Obstacles do not interact with each other |
+| Obstacle | Boundary | No | No | Obstacles scroll off-screen and are removed by position |
+
+<Callout kind="info">
+  The player only physically collides with boundaries. All obstacle contacts are detection-only -- the player does not bounce off obstacles. Instead, contact triggers the death sequence immediately.
+</Callout>
+
+### Player physics category configuration
+
+The player's category, contact, and collision masks are set during scene setup:
+
+```swift GameScene.swift
+playerNode.configurePhysicsCategory(
+    category: PhysicsCategory.player,
+    contact: PhysicsCategory.obstacle | PhysicsCategory.score
+           | PhysicsCategory.boundary | PhysicsCategory.powerUp
+           | PhysicsCategory.collectible,
+    collision: PhysicsCategory.boundary
+)
+```
+
+- **`categoryBitMask`**: Identifies this node as the player
+- **`contactTestBitMask`**: Notifies on contact with obstacles, score zones, boundaries, power-ups, and collectibles
+- **`collisionBitMask`**: Only physically collides with boundaries (prevents falling off screen)
+
+### Score zone configuration
+
+Score zones are invisible physics bodies placed between obstacle pairs. They detect player contact to increment the score:
+
+```swift ObstacleManager.swift
+zoneBody.categoryBitMask = scoreCategory
+zoneBody.contactTestBitMask = 0
+zoneBody.collisionBitMask = 0
+```
+
+<Callout kind="tip">
+  Score zones set `contactTestBitMask` to `0` because the *player* initiates the contact check. The player's contact mask includes `PhysicsCategory.score`, so SpriteKit reports the contact from the player's side. The score zone does not need to check for contacts itself.
+</Callout>
+
+## Contact handling
+
+All contact events are processed in `GameScene`'s `SKPhysicsContactDelegate` implementation:
+
+```swift GameScene.swift
+func didBegin(_ contact: SKPhysicsContact) {
+    let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+
+    if collision == PhysicsCategory.player | PhysicsCategory.obstacle ||
+       collision == PhysicsCategory.player | PhysicsCategory.boundary {
+        // Death: break streak, play death animation
+        comboManager?.recordCollision()
+        handlePlayerDeath()
+
+    } else if collision == PhysicsCategory.player | PhysicsCategory.score {
+        // Score: remove zone, increment score, update streak
+        scoreNode?.removeFromParent()
+        comboManager?.recordObstaclePass()
+        gameManager?.incrementScore()
+
+    } else if collision == PhysicsCategory.player | PhysicsCategory.powerUp {
+        // Power-up: collect and apply effect
+        powerUp.collect()
+        applyPowerUpEffect(powerUp)
+
+    } else if collision == PhysicsCategory.player | PhysicsCategory.collectible {
+        // Collectible: collect stardust or cosmic magnet
+        collectible.collect()
+        applyCollectibleEffect(collectible)
+    }
+}
+```
+
+The method uses bitwise OR on the two contact body categories to identify the collision pair without needing to check ordering.
+
+## World gravity and physics parameters
+
+### Physics world setup
+
+```swift GameScene.swift
+physicsWorld.gravity = CGVector(dx: 0, dy: -5.0)
+physicsWorld.contactDelegate = self
+```
+
+The default gravity pulls the player downward at 5.0 units/s. This is lighter than the SpriteKit default of -9.8, creating a floatier feel appropriate for space gameplay.
+
+<Callout kind="alert">
+  Gravity is dynamically modified during gameplay by zero-G zones (set to 0), gravity flip events (inverted to +5.0), and gravity well obstacles (additive radial force). The game always restores gravity to the default `-5.0` when these effects end.
+</Callout>
+
+### Player physics body
+
+| Parameter | Value | Purpose |
+|-----------|-------|---------|
+| Body shape | Rectangle 36x40pt | Slightly smaller than the 44x44pt sprite for forgiving collision |
+| Mass | 0.1 | Light mass for responsive thrust control |
+| Linear damping | 0.5 | Air resistance that prevents infinite acceleration |
+| Angular damping | 1.0 | Prevents spinning (rotation is handled manually) |
+| Allows rotation | `false` | Rotation controlled by velocity-based smoothing |
+| Is dynamic | `false` initially | Starts static in menu, activated on game start |
+| Restitution | 0.0 | No bouncing on boundary collision |
+| Friction | 0.0 | No friction with boundaries |
+
+### Thrust and velocity
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| Thrust impulse | 18.0 | Upward impulse applied on each tap |
+| Rocket boost multiplier | 1.5x | Thrust multiplied during rocket boost power-up |
+| Max upward velocity | 400 pt/s | Velocity cap prevents flying off screen |
+| Max downward velocity | -600 pt/s | Terminal velocity during free fall |
+
+When the player taps, the `thrust()` method resets vertical velocity to zero and applies a fresh impulse. This creates the characteristic "flappy" feel where each tap gives a discrete upward boost:
+
+```swift PlayerNode.swift
+func thrust() {
+    guard let body = physicsBody, body.isDynamic else { return }
+
+    let effectiveThrust = hasRocketBoost
+        ? thrustImpulse * rocketBoostThrustMultiplier
+        : thrustImpulse
+
+    body.velocity = CGVector(dx: body.velocity.dx, dy: 0)
+    let direction: CGFloat = isGravityFlipped ? -1.0 : 1.0
+    body.applyImpulse(CGVector(dx: 0, dy: effectiveThrust * direction))
+
+    // Clamp velocity
+    if !isGravityFlipped && body.velocity.dy > maxUpwardVelocity {
+        body.velocity = CGVector(dx: body.velocity.dx, dy: maxUpwardVelocity)
+    }
+}
+```
+
+### Rotation smoothing
+
+The player's `zRotation` is updated every frame based on vertical velocity, giving visual feedback about movement direction:
+
+| Parameter | Value | Effect |
+|-----------|-------|--------|
+| Rotation multiplier | 0.0015 | Maps velocity to rotation angle |
+| Max upward rotation | 0.4 rad (~23 degrees) | Nose-up tilt when ascending |
+| Max downward rotation | -0.7 rad (~40 degrees) | Steeper nose-down when falling |
+
+## Obstacle physics bodies
+
+All obstacles share the same physics category (`PhysicsCategory.obstacle`) but vary in body shape and configuration:
+
+```swift ObstacleManager.swift
+topObstacle.configurePhysicsCategory(
+    category: obstacleCategory,
+    contact: PhysicsCategory.none,
+    collision: PhysicsCategory.none
+)
+```
+
+Obstacles set both `contactTestBitMask` and `collisionBitMask` to `none`. Contact detection works because the *player's* `contactTestBitMask` includes `PhysicsCategory.obstacle`. Obstacles are also set to `isDynamic = false` so they are not affected by gravity.
+
+### Boundary nodes
+
+Top and bottom screen boundaries are invisible nodes with static physics bodies:
+
+```swift GameScene.swift
+let topBoundary = SKNode()
+topBoundary.position = CGPoint(x: size.width / 2, y: size.height + 50)
+topBoundary.physicsBody = SKPhysicsBody(
+    rectangleOf: CGSize(width: size.width, height: 100)
+)
+topBoundary.physicsBody?.categoryBitMask = PhysicsCategory.boundary
+topBoundary.physicsBody?.isDynamic = false
+```
+
+The boundaries are positioned 50pt beyond the visible screen edges, with a 100pt thick body. This ensures the player cannot escape the visible area while providing a small buffer zone at the screen edges.

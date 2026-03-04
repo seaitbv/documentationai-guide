@@ -1,0 +1,200 @@
+---
+title: "Audio and haptics"
+description: "SoundManager sound effects with programmatic audio generation and HapticManager Core Haptics feedback patterns."
+---
+
+## Overview
+
+SpaceFlapper uses programmatically generated sound effects via `AVAudioEngine` and Core Haptics feedback through `CHHapticEngine`. Both systems are singletons, fire-and-forget, and respect the shared audio/haptic toggle controlled by `GameManager.isAudioEnabled`.
+
+## SoundManager
+
+### Architecture
+
+`SoundManager` is a singleton (`SoundManager.shared`) built on `AVAudioEngine`. All sound effects are synthesized programmatically using `AVAudioPCMBuffer` - no audio asset files are used. Buffers are pre-generated and cached for zero-latency playback.
+
+```swift SoundManager.swift
+final class SoundManager {
+    static let shared = SoundManager()
+    private var audioEngine: AVAudioEngine?
+    private var playerNode: AVAudioPlayerNode?
+    private var musicPlayerNode: AVAudioPlayerNode?
+}
+```
+
+### Sound effects catalog
+
+| Method | Trigger | Description |
+|--------|---------|-------------|
+| `playThrustSound()` | Player flap | Short whoosh synthesized tone |
+| `playScoreSoundWithStreak(level:)` | Obstacle passed | Score chime with pitch variation by streak level |
+| `playDeathSound()` | Player collision | Impact + decay noise |
+| `playDifficultySound()` | Difficulty increase | Alert tone |
+| `playNearMissSound()` | Near-miss detected | Quick swoosh |
+| `playExtremeNearMissSound()` | Extreme near-miss | Intense swoosh + impact |
+| `playStreakLevelUpSound()` | Streak level increased | Ascending tone sequence |
+| `playNewRecordSound()` | New high score/streak | Celebration fanfare |
+| `playAchievementUnlockSound()` | Achievement unlocked | Achievement jingle |
+
+### Power-up sounds
+
+| Method | Trigger | Description |
+|--------|---------|-------------|
+| `playShieldPickupSound()` | Shield collected | Crystalline pickup chime |
+| `playShieldBreakSound()` | Shield absorbs hit | Glass shatter effect |
+| `playRocketBoostPickupSound()` | Rocket boost collected | Engine ignition tone |
+| `playRocketBoostActiveSound()` | During rocket boost | Sustained engine roar |
+| `playTimeWarpPickupSound()` | Time warp collected | Warped/slowed tone |
+| `playTimeWarpActiveSound()` | During time warp | Low-frequency hum |
+
+### Milestone celebration sounds
+
+| Method | Score | Description |
+|--------|-------|-------------|
+| `playMilestone10Sound()` | 10 | Short celebration |
+| `playMilestone25Sound()` | 25 | Medium celebration |
+| `playMilestone50Sound()` | 50 | Extended celebration |
+| `playMilestone100Sound()` | 100 | Full fanfare |
+
+### Music system
+
+| Method | Description |
+|--------|-------------|
+| `startMusic()` | Begins background music loop |
+| `pauseMusic()` | Pauses music (when audio disabled) |
+| `resumeMusic()` | Resumes paused music |
+| `setAudioEnabled(_:)` | Enables/disables all audio output |
+
+<Callout kind="info">
+  All sounds are generated using `AVAudioPCMBuffer` with mathematical waveform synthesis. This eliminates the need for audio asset files and keeps the app bundle size minimal. The `audioEngine` is lazily initialized on first use.
+</Callout>
+
+### Score sound with streak pitch
+
+The score sound dynamically adjusts pitch based on the current streak level, providing escalating audio feedback as the player builds momentum:
+
+```swift SoundManager.swift
+func playScoreSoundWithStreak(level: Int) {
+    // Higher streak = higher pitch for exciting momentum feedback
+    // level 0 = base pitch, level 4 = highest pitch
+}
+```
+
+---
+
+## HapticManager
+
+### Architecture
+
+`HapticManager` is a singleton (`HapticManager.shared`) wrapping `CHHapticEngine` from Core Haptics. It gracefully no-ops on devices without haptic hardware (simulator, older iPads). The engine lazily starts on first use and auto-restarts after interruptions.
+
+```swift HapticManager.swift
+final class HapticManager {
+    static let shared = HapticManager()
+    private var engine: CHHapticEngine?
+    private var supportsHaptics: Bool
+
+    private init() {
+        supportsHaptics = CHHapticEngine.capabilitiesForHardware().supportsHaptics
+    }
+}
+```
+
+### Engine lifecycle
+
+```swift HapticManager.swift
+private func ensureEngine() {
+    guard supportsHaptics, engine == nil else { return }
+    let eng = try CHHapticEngine()
+
+    eng.resetHandler = { [weak self] in
+        try? self?.engine?.start()
+    }
+    eng.stoppedHandler = { [weak self] reason in
+        self?.engine = nil
+    }
+
+    try eng.start()
+    engine = eng
+}
+```
+
+<Callout kind="tip">
+  The `resetHandler` automatically restarts the engine when returning from background. The `stoppedHandler` nils the engine reference so it gets re-created on next use. All haptic calls use fire-and-forget error handling to never block the game loop.
+</Callout>
+
+### Haptic patterns catalog
+
+| Method | Event Type | Intensity | Sharpness | Duration | Description |
+|--------|-----------|-----------|-----------|----------|-------------|
+| `playFlap()` | Transient | 0.3 | 0.5 | - | Light tap on each flap |
+| `playScore()` | Transient | 0.5 | 0.7 | - | Medium impact for scoring |
+| `playNearMiss()` | Transient | 0.8 | 0.3 | - | Heavy thud for near-miss |
+| `playExtremeNearMiss()` | Transient + Continuous | 1.0 + 0.6 | 1.0 + 0.5 | 0.3s decay | Sharp impact with decay |
+| `playDeath()` | Continuous | 1.0 | 0.5 | 0.3s | Strong buzz on death |
+| `playCollectiblePickup()` | Transient | 0.3 | 0.9 | - | Light crisp tap |
+| `playPowerUpActivation()` | Continuous | 0.6 | 0.4 | 0.15s | Medium buzz for power-up |
+
+### Multi-event patterns
+
+#### Streak level-up (double-tap)
+
+```swift HapticManager.swift
+func playStreakLevelUp() {
+    let tap1 = CHHapticEvent(eventType: .hapticTransient,
+        parameters: [intensity: 0.6, sharpness: 0.6], relativeTime: 0)
+    let tap2 = CHHapticEvent(eventType: .hapticTransient,
+        parameters: [intensity: 0.6, sharpness: 0.6], relativeTime: 0.1)
+    playPattern(events: [tap1, tap2])
+}
+```
+
+#### New record (triple ascending)
+
+```swift HapticManager.swift
+func playNewRecord() {
+    let tap1 = CHHapticEvent(intensity: 0.4, sharpness: 0.5, relativeTime: 0)
+    let tap2 = CHHapticEvent(intensity: 0.6, sharpness: 0.7, relativeTime: 0.08)
+    let tap3 = CHHapticEvent(intensity: 0.9, sharpness: 0.9, relativeTime: 0.16)
+    playPattern(events: [tap1, tap2, tap3])
+}
+```
+
+### Speed surge continuous vibration
+
+The speed surge event uses a continuous haptic pattern that runs for the entire surge duration:
+
+```swift HapticManager.swift
+func startSpeedSurge() {
+    let event = CHHapticEvent(
+        eventType: .hapticContinuous,
+        parameters: [intensity: 0.2, sharpness: 0.3],
+        relativeTime: 0,
+        duration: 30  // Long duration, stopped manually
+    )
+    let player = try engine.makeAdvancedPlayer(with: pattern)
+    try player.start(atTime: CHHapticTimeImmediate)
+    speedSurgePlayer = player
+}
+
+func stopSpeedSurge() {
+    try? speedSurgePlayer?.stop(atTime: CHHapticTimeImmediate)
+    speedSurgePlayer = nil
+}
+```
+
+## Audio/haptic toggle
+
+Both managers share the same toggle controlled by `GameManager.isAudioEnabled`:
+
+```swift GameManager.swift
+@Published var isAudioEnabled: Bool = true {
+    didSet {
+        SoundManager.shared.setAudioEnabled(isAudioEnabled)
+        HapticManager.shared.setEnabled(isAudioEnabled)
+        saveAudioPreference()
+    }
+}
+```
+
+The preference is persisted to `UserDefaults` under the key `SpaceFlapper.AudioEnabled`.

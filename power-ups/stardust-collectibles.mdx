@@ -1,0 +1,94 @@
+---
+title: "Stardust collectibles"
+description: "How stardust star bits spawn, their tier system, collection values, and integration with the Cosmic Magnet and Stardust Fever events"
+---
+
+## Overview
+
+Stardust collectibles are small star-shaped items that award stardust currency when collected. They appear in obstacle gaps with a tier system that determines their value and visual appearance. Stardust is the primary currency for unlocking cosmetic items in the progression system.
+
+## Tier system
+
+| Tier | Stardust value | Spawn chance | Color |
+|------|---------------|-------------|-------|
+| Gold | 3 | 10% | Yellow-gold |
+| Silver | 2 | 30% | White-silver |
+| Bronze | 1 | 60% | Orange-bronze |
+
+<Callout kind="info">
+  During Cosmic Magnet and Stardust Fever events, all collectibles spawn as **gold tier** regardless of the normal distribution, tripling the average stardust income per collectible.
+</Callout>
+
+## Spawn mechanics
+
+| Parameter | Value |
+|-----------|-------|
+| Base spawn chance | 35% per obstacle pair |
+| Minimum gaps between spawns | 2 |
+| Bits per spawn | 1-3 (random) |
+| Collectible size | 16 x 16 points |
+
+### Multi-spawn layout
+
+When multiple bits spawn in the same gap:
+- Horizontal spacing: 20 points between bits
+- Vertical offset: Random within 60% of gap height
+- Bits are centered around the gap center point
+
+### Spawn during Cosmic Magnet boost
+
+When the Cosmic Magnet boost is active:
+- Spawn chance becomes **100%** (guaranteed every gap)
+- No minimum gap requirement
+- All collectibles spawn as gold tier
+
+## Visual design
+
+Each tier has a distinct star-shaped appearance:
+
+### Star shape
+- 4-pointed star with procedural generation
+- Outer radius: 40% of collectible size
+- Inner radius: 40% of outer radius
+
+### Tier colors
+
+| Tier | Primary | Highlight | Glow |
+|------|---------|-----------|------|
+| Gold | R:1.0 G:0.85 B:0.2 | R:1.0 G:1.0 B:0.6 | R:1.0 G:0.9 B:0.3 |
+| Silver | R:0.95 G:0.95 B:1.0 | White | R:0.9 G:0.9 B:1.0 |
+| Bronze | R:1.0 G:0.6 B:0.2 | R:1.0 G:0.8 B:0.4 | R:1.0 G:0.7 B:0.3 |
+
+### Animations
+
+| Animation | Parameters |
+|-----------|-----------|
+| Shimmer glow scale | 0.8x - 1.4x |
+| Shimmer glow alpha | 0.15 - 0.5 |
+| Shimmer cycle | 0.6 seconds |
+| Twinkle rotation | +/- 0.1 radians, 0.3s per direction |
+| Twinkle scale | 0.95x - 1.15x, 0.25s per direction |
+
+### Collection effect
+
+When collected:
+- 12 tier-colored particles burst outward at 60 pts/s
+- Flash circle expands to 2.5x and fades over 0.12s
+- Floating "+X" popup showing stardust value
+- Popup rises 18 points with fade-out over 0.35s
+
+## Movement and cleanup
+
+Collectibles move left with obstacles at the same speed. They are removed when they pass the left edge of the screen. The CollectibleManager tracks all active collectibles for position updates and cleanup.
+
+## Related pages
+
+<Columns cols="2">
+  <Card title="Cosmic Magnet" href="/power-ups/cosmic-magnet" icon="magnet" horizontal="false">
+    Attract stardust with a magnetic field and boost spawn rates.
+  </Card>
+
+  <Card title="Stardust Fever" href="/events/stardust-fever" icon="sparkles" horizontal="false">
+    The 3x scoring event triggered by maximum streak.
+  </Card>
+</Columns>

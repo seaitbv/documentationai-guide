@@ -1,0 +1,81 @@
+---
+title: "Run Recap Badges"
+description: "All performance badges you can earn per run in SpaceFlapper, including thresholds, icons, and visual feedback"
+---
+
+## What are run recap badges
+
+Run recap badges are small performance indicators displayed on the game over screen after each run. They highlight notable achievements from your most recent session, giving you quick visual feedback on what you did well.
+
+Badges appear as a horizontal row of capsule-shaped tags, each with a colored icon and descriptive text.
+
+## All badge types
+
+| Badge | Icon | Threshold | Color | Display Text |
+|-------|------|-----------|-------|-------------|
+| Near Miss | Bolt (filled) | 3+ near-misses in the run | Cyan | "X Near Misses" |
+| Streak | Flame (filled) | 3+ best streak in the run | Orange | "X Streak" |
+| Speed Demon | Hare (filled) | Reached Hard difficulty (effective level 10+) | Red | "Speed Demon" |
+| Close Call Chain | Link | 2+ consecutive near-misses | Yellow | "X Close Call Chain" |
+
+## Badge details
+
+### Near Miss badge
+
+Awarded when you accumulate 3 or more near-misses during a single run. A near-miss occurs when you fly very close to an obstacle without colliding.
+
+- **Threshold**: `nearMissCount >= 3`
+- **Display**: Shows the exact count (e.g., "5 Near Misses")
+
+### Streak badge
+
+Awarded when your longest consecutive obstacle pass streak in the run reaches 3 or more. The streak counter resets when you take a hit or use specific power-ups.
+
+- **Threshold**: `sessionBestStreak >= 3`
+- **Display**: Shows the streak length (e.g., "8 Streak")
+
+<Callout kind="info">
+  The streak badge uses your session's best streak, not your current streak at the time of death. Even if your streak broke mid-run, a high earlier streak still counts.
+</Callout>
+
+### Speed Demon badge
+
+Awarded when you survive long enough for the effective difficulty to reach Hard tier (level 10+). This indicates you've pushed past the early and medium phases of the game.
+
+- **Threshold**: `effectiveDifficulty >= 10.0`
+- **Display**: Fixed text "Speed Demon"
+
+### Close Call Chain badge
+
+Awarded when you achieve 2 or more consecutive near-misses in a row during the run. This measures back-to-back close encounters.
+
+- **Threshold**: `sessionBestCloseCallChain >= 2`
+- **Display**: Shows the chain length (e.g., "3 Close Call Chain")
+
+## Badge display rules
+
+- Badges only appear if at least one badge was earned
+- Multiple badges can be earned in a single run
+- Badges are displayed in a fixed order: Near Miss, Streak, Speed Demon, Close Call Chain
+- Each badge uses a capsule shape with a subtle border matching the badge color
+
+## Visual design
+
+Each badge follows this layout:
+
+- **Icon**: SF Symbol at 11pt bold weight, colored with the badge's theme color
+- **Text**: 12pt semibold rounded system font in white (90% opacity)
+- **Container**: Capsule with 10% white fill and a 30% opacity colored border
+- **Spacing**: 4pt between icon and text, 8pt between badges
+
+## Related pages
+
+<Columns cols="2">
+  <Card title="Game Over Screen" href="/progression/game-over" icon="square" horizontal={false}>
+    See where badges appear in the full game over screen layout.
+  </Card>
+
+  <Card title="Statistics" href="/progression/statistics" icon="bar-chart-2" horizontal={false}>
+    Near-misses and streaks contribute to your lifetime statistics.
+  </Card>
+</Columns>

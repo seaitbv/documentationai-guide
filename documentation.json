@@ -1,139 +1,164 @@
 {
-  "name": "Starter Kit",
+  "name": "SpaceFlapper",
+  "initialRoute": "introduction",
   "colors": {
     "light": {
-      "brand": "#F97316"
+      "brand": "#3B3BDE",
+      "heading": "#0F0F2D",
+      "text": "#2D2D4E"
     },
     "dark": {
-      "brand": "#FDBA74"
+      "brand": "#7B7BFF",
+      "heading": "#E8E8FF",
+      "text": "#B8B8D0"
     }
   },
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
-        "icon": "book",
+        "tab": "Game Guide",
+        "icon": "gamepad-2",
         "groups": [
           {
-            "group": "Start Here",
+            "group": "Getting Started",
             "icon": "rocket",
             "pages": [
-              {
-                "title": "Introduction",
-                "path": "introduction",
-                "icon": "home"
-              },
-              {
-                "title": "Quickstart",
-                "path": "quickstart",
-                "icon": "zap"
-              },
-              {
-                "title": "Components",
-                "path": "components",
-                "icon": "code"
-              }
+              { "title": "Introduction", "path": "introduction", "icon": "star" },
+              { "title": "How to Play", "path": "getting-started/how-to-play", "icon": "hand" },
+              { "title": "Your First Flight", "path": "getting-started/first-flight", "icon": "plane-takeoff" }
             ]
           },
           {
-            "group": "Components",
-            "icon": "layers",
+            "group": "Core Mechanics",
+            "icon": "cog",
             "pages": [
-              {
-                "title": "Images",
-                "path": "components/images",
-                "icon": "image"
-              },
-              {
-                "title": "Cards",
-                "path": "components/cards",
-                "icon": "square"
-              },
-              {
-                "title": "Code",
-                "path": "components/code",
-                "icon": "code"
-              },
-              {
-                "title": "Callouts",
-                "path": "components/callouts",
-                "icon": "message-square"
-              },
-              {
-                "title": "Steps",
-                "path": "components/steps",
-                "icon": "list-ordered"
-              },
-              {
-                "title": "Tabs",
-                "path": "components/tabs",
-                "icon": "columns"
-              }
+              { "title": "Flight Controls", "path": "mechanics/flight-controls", "icon": "move" },
+              { "title": "Scoring System", "path": "mechanics/scoring", "icon": "hash" },
+              { "title": "Difficulty Scaling", "path": "mechanics/difficulty", "icon": "trending-up" },
+              { "title": "Near-Miss System", "path": "mechanics/near-miss", "icon": "target" },
+              { "title": "Streak and Combo", "path": "mechanics/streak-combo", "icon": "flame" }
+            ]
+          },
+          {
+            "group": "Obstacles",
+            "icon": "shield-alert",
+            "pages": [
+              { "title": "Obstacle Overview", "path": "obstacles/overview", "icon": "list" },
+              { "title": "Asteroid Belt", "path": "obstacles/asteroid-belt", "icon": "circle" },
+              { "title": "Solar Approach", "path": "obstacles/solar-approach", "icon": "sun" },
+              { "title": "Europa Ice Field", "path": "obstacles/europa-ice", "icon": "snowflake" },
+              { "title": "Special Obstacles", "path": "obstacles/special", "icon": "zap" }
+            ]
+          },
+          {
+            "group": "Power-Ups and Collectibles",
+            "icon": "sparkles",
+            "pages": [
+              { "title": "Power-Up Overview", "path": "power-ups/overview", "icon": "package" },
+              { "title": "Star Shield", "path": "power-ups/star-shield", "icon": "shield" },
+              { "title": "Rocket Boost", "path": "power-ups/rocket-boost", "icon": "rocket" },
+              { "title": "Time Warp", "path": "power-ups/time-warp", "icon": "clock" },
+              { "title": "Stardust Collectibles", "path": "power-ups/stardust-collectibles", "icon": "gem" },
+              { "title": "Cosmic Magnet", "path": "power-ups/cosmic-magnet", "icon": "magnet" }
+            ]
+          },
+          {
+            "group": "Dynamic Events",
+            "icon": "activity",
+            "pages": [
+              { "title": "Events Overview", "path": "events/overview", "icon": "calendar" },
+              { "title": "Meteor Storms", "path": "events/meteor-storms", "icon": "cloud-lightning" },
+              { "title": "Gravity Flips", "path": "events/gravity-flips", "icon": "flip-vertical" },
+              { "title": "Comet Rides", "path": "events/comet-rides", "icon": "orbit" },
+              { "title": "Speed Surges", "path": "events/speed-surges", "icon": "gauge" },
+              { "title": "Stardust Fever", "path": "events/stardust-fever", "icon": "crown" },
+              { "title": "Warp Zones", "path": "events/warp-zones", "icon": "send" }
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "Progression",
+        "icon": "trophy",
+        "groups": [
+          {
+            "group": "Player Progression",
+            "icon": "bar-chart",
+            "pages": [
+              { "title": "Progression Overview", "path": "progression/overview", "icon": "trending-up" },
+              { "title": "Stardust Currency", "path": "progression/stardust", "icon": "coins" },
+              { "title": "Suit Shop", "path": "progression/suit-shop", "icon": "shirt" },
+              { "title": "Achievements", "path": "progression/achievements", "icon": "award" },
+              { "title": "Statistics", "path": "progression/statistics", "icon": "bar-chart-2" },
+              { "title": "Ghost Rival", "path": "progression/ghost-rival", "icon": "ghost" }
+            ]
+          },
+          {
+            "group": "Game Over and Rewards",
+            "icon": "gift",
+            "pages": [
+              { "title": "Game Over Screen", "path": "progression/game-over", "icon": "flag" },
+              { "title": "Run Recap Badges", "path": "progression/run-recap", "icon": "badge" },
+              { "title": "Micro-Goals", "path": "progression/micro-goals", "icon": "target" }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Technical Reference",
         "icon": "code",
         "groups": [
           {
-            "group": "Overview",
-            "icon": "file-text",
+            "group": "Architecture",
+            "icon": "layout",
             "pages": [
-              {
-                "title": "Authentication",
-                "path": "authentication",
-                "icon": "lock"
-              }
+              { "title": "Architecture Overview", "path": "technical/architecture", "icon": "boxes" },
+              { "title": "Project Structure", "path": "technical/project-structure", "icon": "folder-tree" },
+              { "title": "State Machine", "path": "technical/state-machine", "icon": "git-branch" },
+              { "title": "Scene Graph", "path": "technical/scene-graph", "icon": "network" },
+              { "title": "Physics System", "path": "technical/physics", "icon": "atom" }
             ]
           },
           {
-            "group": "Sample Endpoints",
-            "openapi": "openapi.yaml"
-          }
-        ]
-      },
-      {
-        "tab": "Help Center",
-        "icon": "help-circle",
-        "pages": [
-          {
-            "title": "Help Center",
-            "path": "help-center",
-            "icon": "home"
-          },
-          {
-            "group": "FAQs",
-            "icon": "help-circle",
-            "expandable": false,
+            "group": "Core Systems",
+            "icon": "cpu",
             "pages": [
-              {
-                "title": "Documentation Source",
-                "path": "help-center/faq/getting-started"
-              }
+              { "title": "GameManager", "path": "technical/game-manager", "icon": "settings" },
+              { "title": "GameScene", "path": "technical/game-scene", "icon": "monitor" },
+              { "title": "DifficultyManager", "path": "technical/difficulty-manager", "icon": "sliders" },
+              { "title": "ObstacleManager", "path": "technical/obstacle-manager", "icon": "shield-alert" },
+              { "title": "PlayerNode", "path": "technical/player-node", "icon": "user" }
             ]
           },
           {
-            "group": "Troubleshooting",
-            "icon": "alert-triangle",
-            "expandable": false,
+            "group": "Subsystems",
+            "icon": "puzzle",
             "pages": [
-              {
-                "title": "Page Missing in Sidebar",
-                "path": "help-center/troubleshooting/install-error"
-              }
+              { "title": "Event System", "path": "technical/event-system", "icon": "bell" },
+              { "title": "Power-Up System", "path": "technical/power-up-system", "icon": "sparkles" },
+              { "title": "Combo and Streak System", "path": "technical/combo-system", "icon": "flame" },
+              { "title": "Audio and Haptics", "path": "technical/audio-haptics", "icon": "volume-2" },
+              { "title": "Particle System", "path": "technical/particles", "icon": "sparkle" },
+              { "title": "Parallax Background", "path": "technical/parallax", "icon": "layers" }
             ]
           },
           {
-            "group": "Guides",
-            "icon": "book-open",
-            "expandable": false,
+            "group": "Data and Persistence",
+            "icon": "database",
             "pages": [
-              {
-                "title": "Create Your First Page",
-                "path": "help-center/guides/setup-project"
-              }
+              { "title": "Player Progress Model", "path": "technical/player-progress", "icon": "save" },
+              { "title": "Progression Manager", "path": "technical/progression-manager", "icon": "trending-up" },
+              { "title": "Achievement System", "path": "technical/achievement-system", "icon": "award" },
+              { "title": "Localization", "path": "technical/localization", "icon": "globe" }
+            ]
+          },
+          {
+            "group": "UI Layer",
+            "icon": "layout",
+            "pages": [
+              { "title": "SwiftUI and SpriteKit Bridge", "path": "technical/swiftui-spritekit", "icon": "link" },
+              { "title": "View Hierarchy", "path": "technical/view-hierarchy", "icon": "layout-template" },
+              { "title": "Overlay Views", "path": "technical/overlay-views", "icon": "layers" }
             ]
           }
         ]
@@ -142,11 +167,7 @@
         "tab": "Changelog",
         "icon": "clock",
         "pages": [
-          {
-            "title": "Changelog",
-            "path": "changelog",
-            "icon": "history"
-          }
+          { "title": "Changelog", "path": "changelog", "icon": "history" }
         ]
       }
     ]

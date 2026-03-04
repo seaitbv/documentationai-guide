@@ -1,0 +1,154 @@
+---
+title: "Project Structure"
+description: "Complete directory layout, file organization, and naming conventions in the SpaceFlapper codebase"
+---
+
+## Directory overview
+
+SpaceFlapper organizes its source code by functional concern. Every Swift file lives under a clear category that reflects its role in the architecture.
+
+```
+SpaceFlapper/
+├── SpaceFlapperApp.swift          # App entry point (@main)
+├── ContentView.swift              # Root SwiftUI view, state-driven overlays
+├── Info.plist                     # App configuration
+│
+├── Game/                          # SpriteKit game engine (core gameplay)
+│   ├── GameContainerView.swift    # SwiftUI-SpriteKit bridge
+│   ├── GameManager.swift          # Central state machine and coordinator
+│   ├── GameScene.swift            # SpriteKit scene, physics, game loop
+│   ├── PlayerNode.swift           # Player astronaut sprite and physics
+│   │
+│   ├── ObstacleManager.swift      # Obstacle spawning and lifecycle
+│   ├── ObstacleNode.swift         # Static obstacle pair node
+│   ├── MovingObstacleNode.swift   # Drifting asteroid obstacle
+│   │
+│   ├── DifficultyManager.swift    # Progressive difficulty scaling
+│   ├── ComboManager.swift         # Streak tracking and level-ups
+│   ├── NearMissDetector.swift     # Proximity-based near-miss detection
+│   ├── MilestoneManager.swift     # Score milestone celebrations
+│   ├── StreakTrailManager.swift    # Visual trail effects for streaks
+│   │
+│   ├── ParallaxBackgroundManager.swift  # Multi-layer scrolling background
+│   ├── ParticleLibrary.swift      # Reusable particle effect factory
+│   ├── SoundManager.swift         # Audio playback and management
+│   ├── HapticManager.swift        # Haptic feedback patterns
+│   │
+│   ├── PowerUpManager.swift       # Power-up spawning logic
+│   ├── PowerUpNode.swift          # Base power-up node
+│   ├── StarShieldPowerUp.swift    # Shield power-up
+│   ├── RocketBoostPowerUp.swift   # Speed boost power-up
+│   ├── TimeWarpPowerUp.swift      # Slow-motion power-up
+│   │
+│   ├── CollectibleManager.swift   # Star bit collectible spawning
+│   ├── CollectibleNode.swift      # Stardust collectible node
+│   ├── CosmicMagnetManager.swift  # Cosmic magnet event
+│   ├── CosmicMagnetNode.swift     # Magnet collectible node
+│   │
+│   ├── SpeedSurgeManager.swift    # Speed surge event
+│   ├── WarpZoneManager.swift      # Warp zone event
+│   ├── MeteorStormManager.swift   # Meteor storm event
+│   ├── MeteorNode.swift           # Individual meteor node
+│   ├── StardustFeverManager.swift # Score multiplier fever event
+│   ├── GhostRivalManager.swift    # Ghost rival replay event
+│   ├── GravityFlipManager.swift   # Gravity inversion event
+│   ├── CometRideManager.swift     # Comet ride event
+│   ├── CometNode.swift            # Rideable comet node
+│   │
+│   ├── ZeroGravityZone.swift      # Zero-G zone node
+│   ├── GravityWellObstacle.swift  # Gravitational pull obstacle
+│   ├── SolarFlareObstacle.swift   # Solar approach obstacle
+│   ├── PlasmaLoopObstacle.swift   # Solar approach obstacle
+│   ├── SunspotVortex.swift        # Solar approach obstacle
+│   ├── TumblingRockObstacle.swift # Asteroid belt obstacle
+│   ├── MicroSwarmObstacle.swift   # Asteroid belt obstacle
+│   ├── IronCoreObstacle.swift     # Asteroid belt obstacle
+│   ├── IceGeyserObstacle.swift    # Europa moon obstacle
+│   ├── CrystalShardObstacle.swift # Europa moon obstacle
+│   └── FrozenDebrisObstacle.swift # Europa moon obstacle
+│
+├── Views/                         # SwiftUI overlay views
+│   ├── MenuOverlayView.swift      # Main menu UI
+│   ├── PlayingOverlayView.swift   # In-game HUD (score, streak)
+│   ├── GameOverOverlayView.swift  # Game over results screen
+│   ├── ShopView.swift             # Suit shop interface
+│   ├── StatisticsView.swift       # Player statistics display
+│   ├── AchievementsView.swift     # Achievement gallery
+│   ├── AchievementNotificationView.swift  # Achievement popup banner
+│   ├── SettingsView.swift         # Settings panel
+│   └── StreakDisplayView.swift    # Streak counter HUD element
+│
+├── Progression/                   # Player progression and persistence
+│   ├── ProgressionManager.swift   # Stardust economy and progress tracking
+│   ├── PlayerProgress.swift       # Codable progress data model
+│   ├── AchievementManager.swift   # Achievement definitions and unlock logic
+│   └── Suit.swift                 # Suit definitions and cosmetic data
+│
+├── Managers/                      # App-level managers
+│   └── LocalizationManager.swift  # Runtime language switching
+│
+├── Resources/                     # Localization and audio assets
+│   ├── Audio/
+│   │   └── Neon_Gauntlet.caf     # Background music track
+│   ├── en.lproj/Localizable.strings
+│   ├── de.lproj/Localizable.strings
+│   ├── es.lproj/Localizable.strings
+│   ├── fr.lproj/Localizable.strings
+│   └── ja.lproj/Localizable.strings
+│
+├── Assets.xcassets/               # App icons and color assets
+└── Preview Content/               # SwiftUI preview assets
+```
+
+## Organization principles
+
+### Separation by concern
+
+| Directory | Responsibility | Key classes |
+|-----------|---------------|-------------|
+| `Game/` | All SpriteKit gameplay logic | `GameScene`, `PlayerNode`, `ObstacleManager` |
+| `Views/` | SwiftUI overlay screens | `MenuOverlayView`, `PlayingOverlayView` |
+| `Progression/` | Persistent player data | `ProgressionManager`, `PlayerProgress` |
+| `Managers/` | App-wide services | `LocalizationManager` |
+| `Resources/` | Static assets | Localization strings, audio files |
+
+### Naming conventions
+
+SpaceFlapper follows consistent naming patterns throughout the codebase:
+
+- **Manager suffix** -- Classes that coordinate subsystems: `ObstacleManager`, `DifficultyManager`, `ComboManager`
+- **Node suffix** -- SpriteKit node subclasses: `PlayerNode`, `ObstacleNode`, `MeteorNode`, `PowerUpNode`
+- **Obstacle suffix** -- Specialized obstacle types: `GravityWellObstacle`, `SolarFlareObstacle`
+- **View suffix** -- SwiftUI views: `MenuOverlayView`, `ShopView`, `SettingsView`
+- **PowerUp suffix** -- Power-up variants: `StarShieldPowerUp`, `RocketBoostPowerUp`
+
+<Callout kind="tip">
+  The `Game/` directory contains both the core engine and all obstacle/event types. If the project grows further, obstacle types and event managers could be extracted into subdirectories for clearer separation.
+</Callout>
+
+### File count by category
+
+| Category | Count | Examples |
+|----------|-------|---------|
+| Core engine | 6 | `GameScene`, `GameManager`, `PlayerNode`, `ObstacleManager`, `DifficultyManager`, `GameContainerView` |
+| Obstacle types | 12 | `ObstacleNode`, `MovingObstacleNode`, `GravityWellObstacle`, etc. |
+| Event managers | 8 | `SpeedSurgeManager`, `WarpZoneManager`, `MeteorStormManager`, etc. |
+| Power-ups and collectibles | 7 | `PowerUpNode`, `StarShieldPowerUp`, `CollectibleNode`, etc. |
+| Visual/audio systems | 4 | `ParallaxBackgroundManager`, `ParticleLibrary`, `SoundManager`, `HapticManager` |
+| SwiftUI views | 9 | `ContentView`, `MenuOverlayView`, `ShopView`, etc. |
+| Progression | 4 | `ProgressionManager`, `PlayerProgress`, `AchievementManager`, `Suit` |
+
+## Zero external dependencies
+
+SpaceFlapper uses only Apple-provided frameworks:
+
+- **SwiftUI** -- User interface layer and state management
+- **SpriteKit** -- 2D game rendering, physics simulation, particle effects
+- **GameplayKit** -- State machine for game flow (`GKStateMachine`, `GKState`)
+- **Combine** -- Reactive data binding via `@Published` and `ObservableObject`
+- **UIKit** -- Procedural texture generation and haptic feedback
+- **Foundation** -- `UserDefaults` persistence, `JSONEncoder`/`JSONDecoder`
+
+<Callout kind="info">
+  Every visual asset in the game -- the astronaut sprite, obstacles, backgrounds, and particle effects -- is generated procedurally in code. There are no image assets in the game bundle beyond the app icon.
+</Callout>

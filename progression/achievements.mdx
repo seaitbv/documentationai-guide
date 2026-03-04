@@ -1,0 +1,99 @@
+---
+title: "Achievements"
+description: "Complete list of SpaceFlapper achievements with unlock requirements, stardust rewards, and tracking details"
+---
+
+## Achievement system
+
+Achievements are one-time goals that reward you with stardust bonuses when completed. The game checks your progress against all achievements during every run, and newly unlocked achievements trigger an in-game notification.
+
+## All achievements
+
+| Achievement | ID | Requirement | Stardust Reward |
+|------------|-----|-------------|-----------------|
+| First Flight | `first_flight` | Score 1 point | 10 |
+| Getting Started | `getting_started` | Reach a score of 10 | 25 |
+| Space Rookie | `space_rookie` | Reach a score of 25 | 50 |
+| Asteroid Dodger | `asteroid_dodger` | Reach a score of 50 | 100 |
+| Space Ace | `space_ace` | Reach a score of 75 | 150 |
+| Half Minute Hero | `half_minute_hero` | Survive for 30 seconds | 30 |
+| Close Call | `close_call` | Get 3 near-misses in one run | 40 |
+| Rising Challenge | `rising_challenge` | Reach Hard difficulty | 50 |
+
+### Total rewards
+
+Completing all 8 achievements earns you **455 stardust** in total bonuses.
+
+## Achievement categories
+
+### Score achievements
+
+These achievements track the highest score you reach in a single run. Score equals the number of obstacles passed.
+
+| Achievement | Required Score | Reward |
+|------------|---------------|--------|
+| First Flight | 1 | 10 |
+| Getting Started | 10 | 25 |
+| Space Rookie | 25 | 50 |
+| Asteroid Dodger | 50 | 100 |
+| Space Ace | 75 | 150 |
+
+<Callout kind="tip">
+  Score achievements are cumulative in a single run. Reaching a score of 75 unlocks all five score achievements at once if none were previously completed.
+</Callout>
+
+### Survival achievement
+
+| Achievement | Required Time | Reward |
+|------------|--------------|--------|
+| Half Minute Hero | 30 seconds | 30 |
+
+### Near-miss achievement
+
+| Achievement | Required Near-Misses | Reward |
+|------------|---------------------|--------|
+| Close Call | 3 in one run | 40 |
+
+Near-misses are counted when you fly very close to an obstacle without colliding. You need 3 near-misses within a single run to unlock this achievement.
+
+### Difficulty achievement
+
+| Achievement | Required Tier | Effective Level | Reward |
+|------------|--------------|-----------------|--------|
+| Rising Challenge | Hard | 10+ | 50 |
+
+The difficulty tier is determined by your effective difficulty level, which increases as you survive longer. Reaching an effective level of 10 or higher triggers Hard difficulty.
+
+## How achievements are checked
+
+The game evaluates all achievement conditions continuously during gameplay. When you meet a requirement:
+
+1. The achievement is marked as completed
+2. The stardust reward is added to your balance immediately
+3. A notification callback fires for UI feedback
+4. The achievement state is saved to persistent storage
+
+<Callout kind="info">
+  Achievements are checked against four parameters: current score, survival time, near-miss count in the current run, and current effective difficulty level.
+</Callout>
+
+## Viewing achievements
+
+Open the achievements screen from the main menu to see all achievements with their completion status. The screen displays:
+
+- A progress counter showing completed vs total (e.g., "3 / 8")
+- Each achievement card with name, description, and stardust reward
+- Completed achievements show a green checkmark and gold border
+- Incomplete achievements show your current best progress toward the requirement
+
+## Related pages
+
+<Columns cols="2">
+  <Card title="Stardust Currency" href="/progression/stardust" icon="sparkles" horizontal={false}>
+    See how achievement bonuses fit into the overall stardust economy.
+  </Card>
+
+  <Card title="Statistics" href="/progression/statistics" icon="bar-chart-2" horizontal={false}>
+    Track your lifetime stats that feed into achievement progress.
+  </Card>
+</Columns>

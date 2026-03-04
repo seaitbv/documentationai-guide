@@ -1,0 +1,101 @@
+---
+title: "Obstacle overview"
+description: "Complete reference of all obstacle types in SpaceFlapper, organized by scene with spawn weights and key properties"
+---
+
+## Overview
+
+SpaceFlapper features over a dozen unique obstacle types spread across three distinct scenes. Each scene introduces its own set of hazards with unique visual themes, movement patterns, and special mechanics like gravitational pull or timed eruptions.
+
+## Obstacle categories by scene
+
+### Default scene (asteroid pipes)
+
+The original obstacle system uses paired top-bottom asteroids with a gap between them, plus drifting moving obstacles.
+
+| Obstacle | Type | Key mechanic |
+|----------|------|-------------|
+| ObstacleNode | Static pair | Classic top/bottom gap formation |
+| MovingObstacleNode | Drifting | 8 visual types, 3 drift patterns |
+
+### Asteroid Belt scene
+
+Dedicated asteroid-themed obstacles with unique physics behaviors.
+
+| Obstacle | Weight | Key mechanic |
+|----------|--------|-------------|
+| Tumbling Rock | 45% | Irregular rotating polygon |
+| Micro Swarm | 35% | 5-8 tiny fast rocks in a cluster |
+| Iron Core | 20% | Magnetic pull (radius: 80pt, force: 0.3) |
+| Gravity Well | 15% | Strong gravitational pull (requires difficulty >= 10) |
+
+### Solar Approach scene
+
+Heat-themed obstacles tied to the sun environment.
+
+| Obstacle | Weight | Key mechanic |
+|----------|--------|-------------|
+| Solar Flare | 35% | Extending/retracting plasma jets |
+| Plasma Loop | 35% | Curved arc with swaying animation |
+| Sunspot Vortex | 30% | Spinning dark spot with gravity (radius: 50pt) |
+
+### Europa Ice Moon scene
+
+Ice-themed obstacles with crystal and freezing mechanics.
+
+| Obstacle | Weight | Key mechanic |
+|----------|--------|-------------|
+| Crystal Shard | 40% | Shatters on near-miss |
+| Ice Geyser | 30% | Timed eruption cycles |
+| Frozen Debris | 30% | Large, slow-moving (0.7x speed) |
+| Gravity Well | Conditional | Appears at difficulty >= 10 |
+
+### Cross-scene special obstacles
+
+| Obstacle | Behavior |
+|----------|----------|
+| Zero-Gravity Zone | Translucent bubble, removes gravity inside (radius: 60pt) |
+| Micro Swarm | Fast-moving cluster of 5-8 tiny rocks |
+
+## Hitbox philosophy
+
+All obstacles use **forgiving hitboxes** that are smaller than their visual appearance. This makes the game feel fair while looking dramatic.
+
+| Obstacle type | Shrink factor |
+|--------------|--------------|
+| ObstacleNode | 0.70 |
+| MovingObstacleNode | 0.65 |
+| Tumbling Rock | 0.65 |
+| Solar Flare | 0.65 |
+| Sunspot Vortex | 0.65 |
+| Plasma Loop | 0.65 |
+| Ice Geyser | 0.70 |
+| Crystal Shard | 0.65 |
+| Frozen Debris | 0.65 |
+| Iron Core | 0.65 |
+| Gravity Well | 0.60 |
+| Micro Swarm | 0.60 |
+
+<Callout kind="tip">
+  The smaller the shrink factor, the more forgiving the collision. Gravity Wells have the most generous hitbox at 0.60, which helps compensate for their gravitational pull making them harder to avoid.
+</Callout>
+
+## Scene-specific detail pages
+
+<Columns cols="2">
+  <Card title="Asteroid Belt obstacles" href="/obstacles/asteroid-belt" icon="circle-dot" horizontal="false">
+    Tumbling rocks, micro swarms, iron cores, and gravity wells.
+  </Card>
+
+  <Card title="Solar Approach obstacles" href="/obstacles/solar-approach" icon="sun" horizontal="false">
+    Solar flares, plasma loops, and sunspot vortexes.
+  </Card>
+
+  <Card title="Europa Ice obstacles" href="/obstacles/europa-ice" icon="snowflake" horizontal="false">
+    Ice geysers, crystal shards, and frozen debris.
+  </Card>
+
+  <Card title="Special obstacles" href="/obstacles/special" icon="star" horizontal="false">
+    Cross-scene obstacles and moving obstacle patterns.
+  </Card>
+</Columns>

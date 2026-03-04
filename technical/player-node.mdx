@@ -1,0 +1,181 @@
+---
+title: "PlayerNode"
+description: "Player character node with astronaut sprite, physics body, flap mechanics, power-up states, and visor expression system."
+---
+
+## Overview
+
+`PlayerNode` is an `SKNode` subclass representing the player's astronaut character. It handles sprite rendering, physics simulation, flap mechanics, suit customization, power-up visual states (shield, rocket boost, time warp), streak glow effects, and an animated visor expression system.
+
+## Properties
+
+### Core properties
+
+| Property | Type | Description | Default |
+|----------|------|-------------|---------|
+| `spriteNode` | `SKSpriteNode` | The main astronaut sprite | Generated from suit colors |
+| `thrustEmitter` | `SKEmitterNode?` | Jetpack flame particle emitter | Created on init |
+| `suitPrimaryColor` | `UIColor` | Primary suit body color | From equipped suit |
+| `suitAccentColor` | `UIColor` | Suit accent color | From equipped suit |
+| `suitVisorColor` | `UIColor` | Visor tint color | From equipped suit |
+
+### Power-up states
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `hasShield` | `Bool` | `false` | Star Shield active (survives one hit) |
+| `hasRocketBoost` | `Bool` | `false` | Rocket Boost active (1.5x thrust, invincible) |
+| `hasTimeWarp` | `Bool` | `false` | Time Warp active (0.5x obstacle speed) |
+| `shieldDuration` | `TimeInterval` | 15.0s | Shield auto-expire time |
+| `rocketBoostDuration` | `TimeInterval` | 3.0s | Rocket boost duration |
+| `rocketBoostThrustMultiplier` | `CGFloat` | 1.5x | Thrust force multiplier during boost |
+| `shieldDiameter` | `CGFloat` | 48pt | Visual shield circle diameter |
+
+### Streak glow
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `streakGlowNode` | `SKShapeNode?` | Glow circle around player |
+| `streakGlowLevel` | `Int` | Current glow intensity level |
+| `currentStreakLevel` | `Int` | Jetpack flame state level |
+
+## Physics body
+
+The player uses a circular physics body for smooth collision detection:
+
+```swift PlayerNode.swift
+let playerNode = PlayerNode(suit: equippedSuit)
+playerNode.configurePhysicsCategory(
+    category: PhysicsCategory.player,
+    contact: PhysicsCategory.obstacle | PhysicsCategory.score |
+             PhysicsCategory.boundary | PhysicsCategory.powerUp |
+             PhysicsCategory.collectible,
+    collision: PhysicsCategory.boundary
+)
+```
+
+The player collides with boundaries (bounces off) and detects contact with obstacles, score zones, power-ups, and collectibles.
+
+## Flap mechanics
+
+The `flap()` method applies an upward impulse to counteract gravity:
+
+```swift
+func flap() {
+    // Apply upward impulse
+    physicsBody?.velocity = CGVector(dx: 0, dy: 0)  // Reset vertical velocity
+    physicsBody?.applyImpulse(CGVector(dx: 0, dy: thrustForce))
+
+    // Play thrust effects
+    SoundManager.shared.playThrustSound()
+    HapticManager.shared.playFlap()
+}
+```
+
+<Callout kind="info">
+  During Gravity Flip events, the thrust direction inverts. The `flap()` method checks a `thrustInverted` flag to apply force in the opposite direction. During Rocket Boost, the impulse is multiplied by `rocketBoostThrustMultiplier` (1.5x).
+</Callout>
+
+## Visor expression system
+
+The astronaut's visor displays contextual expressions using overlay sprites:
+
+| Expression | Trigger | Duration |
+|-----------|---------|----------|
+| Neutral | Default state | Persistent |
+| Happy | Passed obstacle / scored | Brief flash |
+| Surprised | Near-miss detected | Brief flash |
+| Scared | During meteor storm or speed surge | Event duration |
+
+```swift PlayerNode.swift
+private var currentExpression: VisorExpression = .neutral
+private var expressionTimer: TimeInterval = 0
+```
+
+## Suit customization
+
+Players can equip different suits that change the astronaut's appearance:
+
+```swift PlayerNode.swift
+func updateSuit(_ suit: Suit) {
+    suitPrimaryColor = suit.primaryColor
+    suitAccentColor = suit.accentColor
+    suitVisorColor = suit.visorColor
+    // Regenerate sprite texture with new colors
+}
+```
+
+## Power-up activation methods
+
+### Star Shield
+
+```swift
+func activateShield() {
+    hasShield = true
+    // Create cyan circular shield node
+    // Start pulse animation
+    // Set auto-expire timer (15s)
+}
+
+func consumeShield() {
+    hasShield = false
+    // Play shield break particles
+    // Remove shield visual
+}
+```
+
+### Rocket Boost
+
+```swift
+func activateRocketBoost() {
+    hasRocketBoost = true
+    // Apply 1.5x thrust multiplier
+    // Show orange flame emitter
+    // Set auto-expire timer (3s)
+}
+```
+
+### Time Warp
+
+```swift
+func activateTimeWarp() {
+    hasTimeWarp = true
+    // Apply purple visual tint
+    // Show swirl particle effect
+    // Set auto-expire timer (4s)
+}
+```
+
+## Animation states
+
+| State | Animation | Trigger |
+|-------|-----------|---------|
+| Idle | Gentle floating bob | Menu state, pre-game |
+| Flying | Thrust particles active | During gameplay |
+| Death | Tumble rotation + fade | On collision |
+| Shield hit | Flash + shield break | Shield absorbs hit |
+
+### Idle animation
+
+```swift PlayerNode.swift
+func startIdleAnimation() {
+    let floatUp = SKAction.moveBy(x: 0, y: 5, duration: 0.8)
+    floatUp.timingMode = .easeInEaseOut
+    let floatDown = SKAction.moveBy(x: 0, y: -5, duration: 0.8)
+    floatDown.timingMode = .easeInEaseOut
+    let sequence = SKAction.sequence([floatUp, floatDown])
+    run(SKAction.repeatForever(sequence), withKey: "idle")
+}
+```
+
+## Streak glow system
+
+The player's glow intensifies with streak level, providing visual feedback for consecutive passes:
+
+| Streak Level | Glow Color | Glow Width |
+|-------------|------------|------------|
+| None | No glow | 0 |
+| Level 1 (3 passes) | Cyan | Subtle |
+| Level 2 (5 passes) | Cyan-orange | Medium |
+| Level 3 (8 passes) | Orange | Strong |
+| Level 4 (12+ passes) | Bright yellow-orange | Maximum |

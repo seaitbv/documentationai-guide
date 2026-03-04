@@ -1,0 +1,94 @@
+---
+title: "Stardust Currency"
+description: "How to earn and spend stardust in SpaceFlapper through obstacles, survival time, difficulty multipliers, and collectibles"
+---
+
+## What is stardust
+
+Stardust is SpaceFlapper's single in-game currency. You earn it by playing runs and spend it in the suit shop to unlock new astronaut suits. There are no premium currencies or real-money purchases.
+
+## Earning stardust
+
+Every run awards stardust based on two base components, scaled by a difficulty multiplier.
+
+### Base earning rates
+
+| Source | Rate | Description |
+|--------|------|-------------|
+| Obstacles passed | 1.0 per obstacle | Each obstacle you fly through earns 1 base stardust |
+| Survival time | 0.5 per second | Every second you stay alive adds 0.5 base stardust |
+
+### Difficulty multiplier
+
+The base stardust total is multiplied by your current difficulty tier. The game determines your tier based on the effective difficulty level, which increases as you survive longer and pass more obstacles.
+
+| Difficulty Tier | Effective Level Range | Multiplier |
+|----------------|----------------------|------------|
+| Easy | 0 - 4.99 | 1.0x |
+| Medium | 5 - 9.99 | 1.25x |
+| Hard | 10 - 19.99 | 1.5x |
+| Expert | 20 - 49.99 | 2.0x |
+| Impossible | 50+ | 5.0x |
+
+<Callout kind="tip">
+  The difficulty tier is determined at the end of your run based on the highest effective difficulty level you reached. Push into harder tiers for significantly more stardust.
+</Callout>
+
+### Calculation formula
+
+The final stardust earned per run follows this formula:
+
+```
+Base Total = (Obstacles Passed x 1.0) + (Survival Seconds x 0.5)
+Final Stardust = floor(Base Total x Difficulty Multiplier)
+```
+
+### Example calculations
+
+| Scenario | Obstacles | Time (s) | Base | Tier | Multiplier | Earned |
+|----------|-----------|----------|------|------|------------|--------|
+| Quick run | 5 | 10 | 10 | Easy | 1.0x | 10 |
+| Decent run | 20 | 40 | 40 | Medium | 1.25x | 50 |
+| Good run | 50 | 90 | 95 | Hard | 1.5x | 142 |
+| Great run | 75 | 130 | 140 | Expert | 2.0x | 280 |
+| Legendary run | 100+ | 200+ | 200+ | Impossible | 5.0x | 1,000+ |
+
+### Stardust collectibles
+
+In addition to end-of-run rewards, you can collect stardust pickups during gameplay:
+
+- **Star bits** spawn in obstacle gaps with a 35% base chance per gap
+- At least 2 gaps must pass between spawns
+- Each spawn produces 1-3 star bits
+- Star bits come in different tiers with varying stardust values
+
+<Callout kind="info">
+  During a Cosmic Magnet power-up boost, star bit spawns are guaranteed in every gap and all bits are gold tier.
+</Callout>
+
+### Achievement bonuses
+
+Unlocking achievements grants one-time stardust rewards ranging from 10 to 150 stardust. See the [achievements page](/progression/achievements) for the full list.
+
+## Spending stardust
+
+Stardust is spent exclusively in the [suit shop](/progression/suit-shop). Suit prices range from free (the Classic suit) to 2,000 stardust for the most expensive suit.
+
+| Suit | Price |
+|------|-------|
+| Classic | Free (default) |
+| Neon Voyager | 500 |
+| Golden Star | 1,000 |
+| Cosmic Phantom | 2,000 |
+
+## Tracking your stardust
+
+Your current stardust balance is displayed in:
+
+- The **suit shop** header
+- The **game over screen** after each run (showing earned + total)
+- Your **lifetime stardust earned** stat in the statistics view
+
+<Callout kind="info">
+  Lifetime stardust earned tracks the total amount you've ever earned, not your current balance. This stat never decreases even after spending.
+</Callout>

@@ -1,0 +1,77 @@
+---
+title: "Scoring system"
+description: "How points are earned through obstacle passes, near-misses, event bonuses, and score multipliers in SpaceFlapper"
+---
+
+## Overview
+
+SpaceFlapper awards points primarily for passing through obstacle gaps. Additional points come from near-miss bonuses, event survival rewards, and stardust collection. Multiple systems can multiply your score simultaneously.
+
+## Base scoring
+
+You earn **1 point** each time you successfully pass through an obstacle gap. A score zone is placed between each obstacle pair, and passing through it triggers the score increment.
+
+## Score multipliers
+
+Several mechanics can multiply the points you earn per obstacle pass.
+
+| Source | Multiplier | Trigger condition |
+|--------|-----------|-------------------|
+| Base scoring | 1x | Default |
+| Gravity Flip | 2x | Active during inverted gravity |
+| Stardust Fever | 3x | Triggered at streak level 4 (12 passes) |
+| Speed Surge | Bonus point | Each pass during 2x speed |
+
+<Callout kind="info">
+  Multipliers from different events do not stack with each other. The highest active multiplier takes priority.
+</Callout>
+
+## Near-miss bonuses
+
+Passing within **15-25 points** of an obstacle edge without colliding triggers a near-miss bonus. See the [near-miss detection page](/mechanics/near-miss) for details on detection zones and rewards.
+
+## Event survival bonuses
+
+Dynamic events award bonus points for survival or completion.
+
+| Event | Bonus | Condition |
+|-------|-------|-----------|
+| Meteor Storm | +10 points | Survive without shield hit |
+| Meteor Storm (shield used) | +5 points | Survive with shield absorbing a hit |
+| Gravity Flip | +5 points | Survive the full 6-second flip |
+| Warp Zone | +1 per 0.5s | Auto-score during 3-second warp |
+| Comet Ride | +1 per shatter | Shattering obstacles while riding |
+
+## Stardust collection
+
+Stardust collectibles award a separate currency used for progression. Their value depends on tier:
+
+| Tier | Stardust value | Spawn chance |
+|------|---------------|--------------|
+| Gold | 3 | 10% |
+| Silver | 2 | 30% |
+| Bronze | 1 | 60% |
+
+<Callout kind="tip">
+  During Cosmic Magnet and Stardust Fever events, all collectibles spawn as gold tier, maximizing your stardust income.
+</Callout>
+
+## Difficulty and scoring
+
+Score directly drives difficulty progression. Every **8 points**, the difficulty level increases by 1. This means higher scores bring faster obstacle speeds, smaller gaps, and more frequent moving obstacles. See the [difficulty scaling page](/mechanics/difficulty) for the full curve.
+
+## High score tracking
+
+The game persists your all-time high score locally. Your current score is displayed during gameplay and compared against your record at game over.
+
+## Related pages
+
+<Columns cols="2">
+  <Card title="Difficulty scaling" href="/mechanics/difficulty" icon="trending-up" horizontal="false">
+    How score and time drive progressive difficulty.
+  </Card>
+
+  <Card title="Near-miss detection" href="/mechanics/near-miss" icon="target" horizontal="false">
+    Bonus points for close encounters with obstacles.
+  </Card>
+</Columns>
